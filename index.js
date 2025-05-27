@@ -1,20 +1,31 @@
+// Importo librerias necesarias
 import { fileURLToPath } from 'url'; 
-import path from 'path';
 
+// Proceso argumentos quitando lo que no me sirve
 const args = process.argv.slice(2);
-console.log(args);
-let comando=args[0];
+
+const [comando,subComando,title,price,category]=args;
+console.log(`${comando}\n${subComando}\n${title}`)
+// let comando=args[0];
 
 
-let data=args[1];
-console.log(args.length);
-const URL=" https://fakestoreapi.com"
+// let data=args[1];
+// console.log(args.length);
+const URL=" https://fakestoreapi.com/products"
+const AYUDA="----------------------------------------------------------------------\n"+
+            "COMANDO INCORRECTO.\n"+
+            "Las opciones son:\n"+
+            "Listar todos   : npm run start GET products\n"+
+            "Listar por id  : npm run start GET products/id\n"+
+            "Listar Agregar : npm run start POST products <title> <price> <category>\n"+
+            "Listar Eliminar: npm run start DELETE products/id\n"+
+            "----------------------------------------------------------------------\n";
 const config = { 
     method: '',
     headers: { 
        'Content-Type': 'application/json',
     },
-    // , 
+    // body:{} 
 };
 const producto={
   "id":0,
@@ -24,36 +35,32 @@ const producto={
   "category": "string",
   "image": "http://example.com"
 }
-
+if (args.length==1){
+    console.log(AYUDA);
+}else{
 switch (comando){
     case 'GET':
         config.method='GET';
-        if(args[1].includes("/")){
-            let id=args[1].split("/")[1];
-            console.log("ID= "+ id);
-            fetch(URL + "/products/"+id,config) 
-            .then((response) => response.json()) 
-            .then((data) =>console.log(data));
+        // procesa el get para 1 solo producto(if) o para todos(else)
+        if(subComando.includes("/")){
+            let id=subComando.split("/")[1];
+            getData(URL + "/"+id,config);
+        
         }else{
-            fetch(URL + "/products",config) 
-            .then((response) => response.json()) 
-            .then((data) => console.log(data));            
+            getData(URL,config);      
         }
         break;
     case 'POST': 
         if (args.length==5)
         {
-            producto.title=args[2];
-            producto.price=args[3];
-            producto.category=args[4];
+            producto.title=title;//args[2];
+            producto.price=price;//args[3];
+            producto.category=category;//args[4];
             config.method='POST';   
             config.body= JSON.stringify(producto);
-            console.log(producto);
-            fetch(URL + "/products") 
-            .then((response) => response.json()) 
-            .then((data) => console.log(data));
+            getData(URL ,config);
         }else{
-            console.log("Ingreso incorrecto");
+            console.log("Ingreso incorrecto el comando tiene la forma:");
             console.log("npm run start POST products <title> <price> <category>");
         }
     
@@ -61,16 +68,31 @@ switch (comando){
     
     case 'DELETE':
         config.method='DELETE';
-        if(args[1].includes("/")){
-            let id=args[1].split("/")[1];
-            console.log("ID= "+ id);
-            fetch(URL + "/products/"+id,config) 
-            .then((response) => response.json()) 
-            .then((data) =>console.log(data));
+        if(subComando.includes("/")){
+            let id=subComando.split("/")[1];
+            getData(URL+"/"+id,config);
+ 
         }else{
-            console.log ("debe ingresar el ID del producto a eliminar");
+            console.log ("Comando incorrecto.Debe ingresar el ID del producto a eliminar");
+            console.log("npm run start DELETE products/id");
         }
         break;
-    default: console.log("comando incorrecto");
+    default: console.log(AYUDA);
+    }
+}
 
+// Funcion para comunicacion con la API
+async function getData(url,configuracion) {
+//   const url = "https://fakestoreapi.com/product";
+  try {
+    const respuesta = await fetch(url,configuracion);
+    if (!respuesta.ok) {
+      throw new Error("Response status: "+respuesta.status);
+    }
+
+    const data = await respuesta.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error.message);
+  }
 }

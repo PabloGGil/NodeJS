@@ -8,7 +8,7 @@
     "start": "node index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Pablo Gabriel Gil",
   "license": "ISC",
-  "description": ""
+  "description": "ABM de productos con API"
 }

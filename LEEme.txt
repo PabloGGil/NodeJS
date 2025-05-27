@@ -1,0 +1,18 @@
+==========================================================================
+Programa para mostrar , agregar y eliminar productos de una tienda por 
+medio de una API
+
+AUTOR: Pablo Gabriel Gil
+Fecha: 27/05/2025
+
+Los comandos que permiten realizar las tareas son
+
+Listar todos   : npm run start GET products
+Listar por id  : npm run start GET products/id
+Listar Agregar : npm run start POST products <title> <price> <category>
+Listar Eliminar: npm run start DELETE products/id
+
+NOTAS
+- id CORRESPONDE AL IDENTIFICADOR UNICO DEL producto
+- <title> <price> <category> son los datos del producto  NO INCLUIR LOS <>
+==========================================================================
